@@ -1,2 +1,0 @@
-document.addEventListener('DOMContentLoaded',function(){const now=new Date();const currentMonth=now.getMonth();let startYear,endYear;if(currentMonth>=4){startYear=now.getFullYear();endYear=startYear+1;}else{startYear=now.getFullYear()-1;endYear=startYear+1;}
-const academicYear=`A.Y. ${startYear}-${endYear}`;const targetCurriculumYearInput=document.getElementById('id_target_curriculum_year');if(targetCurriculumYearInput){targetCurriculumYearInput.placeholder=`e.g. ${academicYear}`;}});;

@@ -1,1 +1,0 @@
-document.addEventListener('DOMContentLoaded',function(){const submitButton=document.getElementById('updateCourseSubmitButton');submitButton.addEventListener('click',function(){const form=this.closest('.form-container').querySelector('form#updateCourseForm');if(form){form.submit();}else{console.error('Form not found');}});});;

@@ -68,7 +68,6 @@ INSTALLED_APPS = [
     'apps.institutes',
     'apps.programs',
     'apps.faculty',
-    'algorithm',
     'rest_framework',
     'rest_framework.authtoken',
 ]

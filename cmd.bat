@@ -1,3 +1,3 @@
 @echo off
-cd %HOMEPATH%\Desktop\acadsked
+cd %HOMEPATH%\Desktop\testLoginAcadsked
 pipenv shell 

@@ -1,3 +1,0 @@
-document.addEventListener('DOMContentLoaded',function(){var isFormDirty=false;function markFormDirty(){isFormDirty=true;}
-function resetFormDirty(){isFormDirty=false;}
-document.querySelectorAll('form input, form textarea, form select').forEach(function(element){element.addEventListener('change',markFormDirty);element.addEventListener('input',markFormDirty);});document.querySelectorAll('form').forEach(function(form){form.addEventListener('submit',resetFormDirty);});window.addEventListener('beforeunload',function(e){if(isFormDirty){e.preventDefault();e.returnValue='You have unsaved changes. Are you sure you want to leave?';}});});;
