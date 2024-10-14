@@ -2,7 +2,6 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static 
 from django.conf import settings
-from algorithm import views
 from apps.user.views import signup, verify_account
 from config.views import CourseListAPIView, NotificationListView, ProtectedMediaView,  SchedulerDataAPIView, UserCoursesView, check_unique, home_redirect
 from django.contrib.auth.decorators import login_required
@@ -23,8 +22,6 @@ urlpatterns = [
     path('institute/', include('apps.institutes.urls', namespace='institutes')),
     path('program/', include('apps.programs.urls', namespace="programs")),
     path('faculty-and-staff/', include('apps.faculty.urls', namespace="faculty")),
-    path('algorithm/', views.algorithm_view, name='algorithm_view'),
-    path('course/', views.course_view, name='course_view'),
     path("__debug__/", include("debug_toolbar.urls")), #remove this during production
     path('check-unique/', check_unique, name='check_unique'),
 

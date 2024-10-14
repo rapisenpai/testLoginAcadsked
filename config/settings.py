@@ -12,10 +12,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = env('SECRET_KEY')
 
-if ENVIRONMENT == 'development':
-    DEBUG = True
-else:
-    DEBUG = False
+DEBUG = True
 
 INTERNAL_IPS = (
     '127.0.0.1',
@@ -35,7 +32,7 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
-    # 'django.contrib.sessions', replaced by qsessions
+    'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'qsessions',
@@ -72,6 +69,7 @@ INSTALLED_APPS = [
     'apps.faculty',
     'rest_framework',
     'rest_framework.authtoken',
+    'whitenoise.runserver_nostatic',
 ]
 
 # social account providers
@@ -136,17 +134,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
+
 DATABASES = {
     'default': {
-        'ENGINE': env('ENGINE'),
-        'NAME': env('NAME'),
-        'USER': env('USER'),
-        'PASSWORD': env('PASSWORD'),
-        'HOST': env('HOST'), 
-        'PORT': env('PORT'),
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -207,7 +201,7 @@ ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 1
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_REQUIRED = False
-ALLOWED_HOSTS = ['.vercel.app']
+ALLOWED_HOSTS = ['*']
 ACCOUNT_FORMS = {
     'signup': 'apps.user.forms.SignupForm',
     'change_password': 'apps.user.forms.RequestPasswordChangeForm',
