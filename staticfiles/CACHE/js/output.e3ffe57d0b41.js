@@ -1,0 +1,1 @@
+document.addEventListener('DOMContentLoaded',function(){const form=document.querySelector('form');const backButton=form.querySelector('button[name="action"][value="prev"]');if(backButton){backButton.addEventListener('click',function(event){form.setAttribute('novalidate',true);});}});;

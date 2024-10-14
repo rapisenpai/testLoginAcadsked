@@ -1,0 +1,116 @@
+{% block content %}
+  <h1>{{ program.program_name }} ({{ program.program_code }})</h1>
+  <h2>Institute: {{ program.institute.institute_name }}</h2>
+  <h3>Courses under this program:</h3>
+  {% for year, semesters in totals.items %}
+    <h2>{{ year }}</h2>
+    <ul>
+      {% for semester, details in semesters.items %}
+        <li>
+          <strong>{{ semester }}:</strong>
+          <ul>
+            <li>Lecture Hours: {{ details.lecture }}</li>
+            <li>Lab Hours: {{ details.lab }}</li>
+            <li>Credit Units: {{ details.credit_units }}</li>
+          </ul>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endfor %}
+  {% if grouped_courses %}
+    {% for year_level, semesters in grouped_courses.items %}
+      <h2>{{ year_level }}</h2>
+      {% for semester, courses in semesters.items %}
+        <h3>{{ semester }}</h3>
+        {% if courses %}
+          <table border="1">
+            <thead>
+              <tr>
+                <th>Course Code</th>
+                <th>Description</th>
+                <th>Lecture Hours</th>
+                <th>Lab Hours</th>
+                <th>Credit Units</th>
+                <th>Is Major Course</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for course in courses %}
+                <tr>
+                  <td>{{ course.course_code }}</td>
+                  <td>{{ course.course_description }}</td>
+                  <td>{{ course.lecture }}</td>
+                  <td>{{ course.laboratory }}</td>
+                  <td>{{ course.credit_units }}</td>
+                </tr>
+              {% empty %}
+                <tr>
+                  <td colspan="7">No courses available for this semester.</td>
+                </tr>
+              {% endfor %}
+              <!-- Totals Row for Each Semester -->
+              <tr>
+                <td colspan="2">
+                  <strong>Total for {{ year_level }} - {{ semester }}</strong>
+                </td>
+                <td id="lecture-{{ year_level }}-{{ semester }}"></td>
+                <td id="lab-{{ year_level }}-{{ semester }}"></td>
+                <td id="credit_units-{{ year_level }}-{{ semester }}"></td>
+                <td></td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+        {% else %}
+          <p>No courses available for this semester.</p>
+        {% endif %}
+      {% endfor %}
+    {% endfor %}
+    <!-- Overall Totals Row -->
+    <h2>Overall Totals</h2>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>Lecture Hours</th>
+          <th>Lab Hours</th>
+          <th>Credit Units</th>
+          <th>Total Courses</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td id="overall-lecture"></td>
+          <td id="overall-lab"></td>
+          <td id="overall-credit_units"></td>
+          <td id="overall-courses"></td>
+        </tr>
+      </tbody>
+    </table>
+  {% else %}
+    <p>No courses available for this program.</p>
+  {% endif %}
+  <!-- Render JSON data -->
+  <script>
+    const totals = {{ totals|safe }};
+    const overallTotals = {{ overall_totals|safe }};
+
+    document.addEventListener("DOMContentLoaded", function() {
+      // Insert totals for each semester
+      for (const [year, semesters] of Object.entries(totals)) {
+        for (const [semester, details] of Object.entries(semesters)) {
+          document.getElementById(`lecture-${year}-${semester}`).innerText = details.lecture;
+          document.getElementById(`lab-${year}-${semester}`).innerText = details.lab;
+          document.getElementById(`credit_units-${year}-${semester}`).innerText = details.credit_units;
+        }
+      }
+
+      // Insert overall totals
+      document.getElementById("overall-lecture").innerText = overallTotals.lecture;
+      document.getElementById("overall-lab").innerText = overallTotals.lab;
+      document.getElementById("overall-credit_units").innerText = overallTotals.credit_units;
+      document.getElementById("overall-courses").innerText = overallTotals.courses;
+    });
+  </script>
+  <!-- Edit Course Modal -->
+{% endblock content %}

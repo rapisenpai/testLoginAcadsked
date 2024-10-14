@@ -1,0 +1,93 @@
+<!-- Section for Selecting Group Name -->
+<form method="get">
+  <div class="group-section">
+    <h2 class="font-bold">Select Group Name</h2>
+    {% if unique_names %}
+      <select id="group-name" name="group_name" onchange="this.form.submit()">
+        <option value="">Select a Group Name</option>
+        {% for name in unique_names %}
+          <option value="{{ name }}" {% if name == selected_name %}selected{% endif %}>{{ name }}</option>
+        {% endfor %}
+      </select>
+    {% else %}
+      <p>No group names available.</p>
+    {% endif %}
+  </div>
+  <!-- Section for Selecting Semester -->
+  {% if selected_name %}
+    <div class="semester-section">
+      <h2 class="font-bold">Select Semester for {{ selected_name }}</h2>
+      {% if selected_groups %}
+        <select id="semester" name="group" onchange="this.form.submit()">
+          <option value="">Select a Semester</option>
+          {% for group in selected_groups %}
+            <option value="{{ group.group_id }}"
+                    {% if group.group_id|stringformat:"s" == selected_group_id %}selected{% endif %}>
+              {{ group.get_semester_display }}
+            </option>
+          {% endfor %}
+        </select>
+      {% else %}
+        <p>No semesters available for this group name.</p>
+      {% endif %}
+    </div>
+  {% endif %}
+</form>
+<div class="hs-dropdown relative inline-flex">
+  <button id="hs-dropdown-toggle"
+          type="button"
+          class="hs-dropdown-toggle py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none"
+          aria-haspopup="menu"
+          aria-expanded="false"
+          aria-label="Dropdown">
+    {% if selected_group %}
+      <span></span>
+    {% else %}
+      <span>Select group</span>
+    {% endif %}
+    <svg class="hs-dropdown-open:rotate-180 size-4"
+         xmlns="http://www.w3.org/2000/svg"
+         width="24"
+         height="24"
+         viewBox="0 0 24 24"
+         fill="none"
+         stroke="currentColor"
+         stroke-width="2"
+         stroke-linecap="round"
+         stroke-linejoin="round">
+      <path d="m6 9 6 6 6-6" />
+    </svg>
+  </button>
+  <div class="hs-dropdown-menu min-w-48 transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 hidden z-10">
+    <div class="hs-dropdown-open:ease-in hs-dropdown-open:opacity-100 hs-dropdown-open:scale-100 transition ease-out opacity-0 scale-95 duration-200 mt-2 origin-top-left min-w-48 bg-white shadow-md rounded-lg p-2"
+         data-hs-transition>
+      <span class="block py-2 px-3 text-xs font-medium uppercase text-gray-400">Options</span>
+      {% if all_groups.exists %}
+        {% for group in all_groups %}
+          <a class="flex justify-between items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
+             href="?group={{ group.group_id }}&page={{ request.GET.page }}&items_per_page={{ request.GET.items_per_page }}">
+            <span>{{ group.group_name }} ({{ group.get_semester_display }})</span>
+            {% if group.group_id == selected_group.group_id %}
+              <svg class="shrink-0 size-3.5 text-gray-800"
+                   xmlns="http://www.w3.org/2000/svg"
+                   width="24"
+                   height="24"
+                   viewBox="0 0 24 24"
+                   fill="none"
+                   stroke="currentColor"
+                   stroke-width="2"
+                   stroke-linecap="round"
+                   stroke-linejoin="round">
+                <path d="M20 6 9 17l-5-5"></path>
+              </svg>
+            {% endif %}
+          </a>
+        {% endfor %}
+      {% else %}
+        <div class="flex justify-between items-center py-2 px-3 text-sm text-gray-800">
+          <span class="text-sm text-gray-500">No groups available.</span>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>

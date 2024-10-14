@@ -1,0 +1,2 @@
+document.addEventListener('DOMContentLoaded',()=>{const textElement=document.getElementById('text');const text=textElement.innerText;function toTitleCase(text){return text.toLowerCase().split(' ').map(word=>word.charAt(0).toUpperCase()+word.slice(1)).join(' ');}
+textElement.innerText=toTitleCase(text);});;

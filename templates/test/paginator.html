@@ -1,0 +1,43 @@
+ {% if session_details %}
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Date Login</th>
+                    <th>Expire Date</th>
+                    <th>IP</th>
+                    <th>Location</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for session in session_details %}
+                <tr>
+                    <td>{{ session.created_at }}</td>
+                    <td>{{ session.expire_date }}</td>
+                    <td>{{ session.ip }}</td>
+                    <td>{{ session.location }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div>
+            <p>{{ page_obj.paginator.count }} results</p>
+            <div>
+                {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}">Prev</a>
+                {% endif %}
+
+                <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+
+                {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">Next</a>
+                {% endif %}
+            </div>
+        </div>
+    {% else %}
+        <p>No active sessions found.</p>
+    {% endif %}
+    
+    {% if error %}
+        <p>{{ error }}</p>
+    {% endif %}

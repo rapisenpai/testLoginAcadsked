@@ -1,0 +1,2 @@
+document.addEventListener('DOMContentLoaded',()=>{const textElement=document.getElementById('text');const text=textElement.innerText;function toSentenceCase(text){return text.toLowerCase().replace(/(?:^|\.\s*)([a-z])/g,(match)=>match.toUpperCase());}
+textElement.innerText=toSentenceCase(text);});;

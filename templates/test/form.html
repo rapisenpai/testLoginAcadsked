@@ -1,0 +1,133 @@
+<form method="post">
+  {% csrf_token %}
+  <!-- Dropdown for Selecting Group Name -->
+  <div class="hs-dropdown relative inline-flex">
+    <button id="group-name-dropdown-toggle"
+            type="button"
+            class="hs-dropdown-toggle py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none"
+            aria-haspopup="menu"
+            aria-expanded="false"
+            aria-label="Dropdown">
+      {% if selected_name %}
+        <span>{{ selected_name }}</span>
+      {% else %}
+        <span>Select Group Name</span>
+      {% endif %}
+      <svg class="hs-dropdown-open:rotate-180 size-4"
+           xmlns="http://www.w3.org/2000/svg"
+           width="24"
+           height="24"
+           viewBox="0 0 24 24"
+           fill="none"
+           stroke="currentColor"
+           stroke-width="2"
+           stroke-linecap="round"
+           stroke-linejoin="round">
+        <path d="m6 9 6 6 6-6" />
+      </svg>
+    </button>
+    <div class="hs-dropdown-menu min-w-48 transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 hidden z-10">
+      <div class="hs-dropdown-open:ease-in hs-dropdown-open:opacity-100 hs-dropdown-open:scale-100 transition ease-out opacity-0 scale-95 duration-200 mt-2 origin-top-left min-w-48 bg-white shadow-md rounded-lg p-2"
+           data-hs-transition>
+        <span class="block py-2 px-3 text-xs font-medium uppercase text-gray-400">Group Names</span>
+        {% if unique_names %}
+          {% for name in unique_names %}
+            <a class="flex justify-between items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
+               href="#"
+               onclick="document.getElementById('group-name-field').value='{{ name }}'; this.closest('form').submit();">
+              <span>{{ name }}</span>
+              {% if name == selected_name %}
+                <svg class="shrink-0 size-3.5 text-gray-800"
+                     xmlns="http://www.w3.org/2000/svg"
+                     width="24"
+                     height="24"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="2"
+                     stroke-linecap="round"
+                     stroke-linejoin="round">
+                  <path d="M20 6 9 17l-5-5"></path>
+                </svg>
+              {% endif %}
+            </a>
+          {% endfor %}
+        {% else %}
+          <div class="flex justify-between items-center py-2 px-3 text-sm text-gray-800">
+            <span class="text-sm text-gray-500">No group names available.</span>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <input type="hidden"
+         id="group-name-field"
+         name="group_name"
+         value="{{ selected_name }}">
+  <!-- Dropdown for Selecting Semester -->
+  {% if selected_name %}
+    <div class="hs-dropdown relative inline-flex mt-4">
+      <button id="semester-dropdown-toggle"
+              type="button"
+              class="hs-dropdown-toggle py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none"
+              aria-haspopup="menu"
+              aria-expanded="false"
+              aria-label="Dropdown">
+        {% if selected_group_id %}
+          <span>{{ selected_group.get_semester_display }}</span>
+        {% else %}
+          <span>Select Semester</span>
+        {% endif %}
+        <svg class="hs-dropdown-open:rotate-180 size-4"
+             xmlns="http://www.w3.org/2000/svg"
+             width="24"
+             height="24"
+             viewBox="0 0 24 24"
+             fill="none"
+             stroke="currentColor"
+             stroke-width="2"
+             stroke-linecap="round"
+             stroke-linejoin="round">
+          <path d="m6 9 6 6 6-6" />
+        </svg>
+      </button>
+      <div class="hs-dropdown-menu min-w-48 transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 hidden z-10">
+        <div class="hs-dropdown-open:ease-in hs-dropdown-open:opacity-100 hs-dropdown-open:scale-100 transition ease-out opacity-0 scale-95 duration-200 mt-2 origin-top-left min-w-48 bg-white shadow-md rounded-lg p-2"
+             data-hs-transition>
+          <span class="block py-2 px-3 text-xs font-medium uppercase text-gray-400">Semesters for {{ selected_name }}</span>
+          {% if selected_groups %}
+            {% for group in selected_groups %}
+              <a class="flex justify-between items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
+                 href="#"
+                 onclick="document.getElementById('semester-field').value='{{ group.group_id }}'; this.closest('form').submit();">
+                <span>{{ group.get_semester_display }}</span>
+                {% if group.group_id|stringformat:"s" == selected_group_id %}
+                  <svg class="shrink-0 size-3.5 text-gray-800"
+                       xmlns="http://www.w3.org/2000/svg"
+                       width="24"
+                       height="24"
+                       viewBox="0 0 24 24"
+                       fill="none"
+                       stroke="currentColor"
+                       stroke-width="2"
+                       stroke-linecap="round"
+                       stroke-linejoin="round">
+                    <path d="M20 6 9 17l-5-5"></path>
+                  </svg>
+                {% endif %}
+              </a>
+            {% endfor %}
+          {% else %}
+            <div class="flex justify-between items-center py-2 px-3 text-sm text-gray-800">
+              <span class="text-sm text-gray-500">No semesters available for this group name.</span>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <input type="hidden"
+           id="semester-field"
+           name="group"
+           value="{{ selected_group_id }}">
+  {% endif %}
+</form>

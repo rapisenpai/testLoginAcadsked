@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup Form</title>
+    <!-- Tailwind CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+          rel="stylesheet">
+  </head>
+  <body class="bg-gray-100 text-gray-800">
+    <div class="container mx-auto p-8 max-w-lg">
+      <h1 class="text-2xl font-bold mb-6 text-center">Signup Form</h1>
+      <form method="post" class="bg-white p-6 rounded shadow-md">
+        {% csrf_token %}
+        {% if step == 1 %}
+          <h2 class="text-xl font-semibold mb-4">Step 1: Personal Information</h2>
+          {% for field in personal_form %}
+            <div class="mb-4">
+              <label for="{{ field.id_for_label }}"
+                     class="block text-gray-700 font-medium mb-2">{{ field.label_tag }}</label>
+              {{ field }}
+              {% if field.help_text %}<p class="text-gray-500 text-sm mt-1">{{ field.help_text }}</p>{% endif %}
+              {% if field.errors %}<p class="text-red-500 text-sm mt-1">{{ field.errors }}</p>{% endif %}
+            </div>
+          {% endfor %}
+        {% elif step == 2 %}
+          <h2 class="text-xl font-semibold mb-4">Step 2: Employment Information</h2>
+          {% for field in employment_form %}
+            <div class="mb-4">
+              <label for="{{ field.id_for_label }}"
+                     class="block text-gray-700 font-medium mb-2">{{ field.label_tag }}</label>
+              {{ field }}
+              {% if field.help_text %}<p class="text-gray-500 text-sm mt-1">{{ field.help_text }}</p>{% endif %}
+              {% if field.errors %}<p class="text-red-500 text-sm mt-1">{{ field.errors }}</p>{% endif %}
+            </div>
+          {% endfor %}
+        {% elif step == 3 %}
+          <h2 class="text-xl font-semibold mb-4">Step 3: Account Information</h2>
+          {% for field in signup_form %}
+            <div class="mb-4">
+              <label for="{{ field.id_for_label }}"
+                     class="block text-gray-700 font-medium mb-2">{{ field.label_tag }}</label>
+              {{ field }}
+              {% if field.help_text %}<p class="text-gray-500 text-sm mt-1">{{ field.help_text }}</p>{% endif %}
+              {% if field.errors %}<p class="text-red-500 text-sm mt-1">{{ field.errors }}</p>{% endif %}
+            </div>
+          {% endfor %}
+        {% endif %}
+        <div class="flex justify-between mt-6">
+          {% if step > 1 %}
+            <button type="submit"
+                    name="action"
+                    value="prev"
+                    class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Back</button>
+          {% endif %}
+          {% if step < 3 %}
+            <button type="submit"
+                    name="action"
+                    value="next"
+                    class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Next</button>
+          {% else %}
+            <button type="submit"
+                    name="action"
+                    value="submit"
+                    class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Submit</button>
+          {% endif %}
+        </div>
+      </form>
+    </div>
+  </body>
+</html>

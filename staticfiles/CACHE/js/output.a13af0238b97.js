@@ -1,0 +1,1 @@
+document.addEventListener('DOMContentLoaded',function(){var element=document.getElementById('no-data-message');if(element){element.textContent='Select a curriculum year to display the courses.';}});;

@@ -1,0 +1,253 @@
+<!-- Form for adding a curriculum year -->
+<form method="POST">
+  {% csrf_token %}
+  {{ curriculum_form.as_p }}
+  <button type="submit" name="AddCurriculumYearSubmit">Add Curriculum Year</button>
+</form>
+<!-- Display form errors if any -->
+{% if curriculum_year_form.errors %}
+  <div class="form-errors">
+    <ul>
+      {% for field in curriculum_year_form %}
+        {% for error in field.errors %}<li>{{ field.label }}: {{ error }}</li>{% endfor %}
+      {% endfor %}
+      {% for error in curriculum_year_form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
+    </ul>
+  </div>
+{% endif %}
+<!-- Display the selected curriculum year -->
+{% if request.GET.curriculum %}
+  {% for year in available_curriculum_years %}
+    {% if year.pk|stringformat:"s" == request.GET.curriculum %}
+      <p>Selected Curriculum Year: {{ year.curriculum_year }}</p>
+    {% endif %}
+  {% endfor %}
+{% endif %}
+<!-- Links for selecting curriculum years -->
+{% for year in available_curriculum_years %}
+  <a href="?curriculum={{ year.pk }}"
+     class="{% if year.pk|stringformat:"s" == request.GET.curriculum %}selected{% endif %}">
+    {{ year.curriculum_year }}
+  </a>
+{% endfor %}
+<!-- Links for selecting programs -->
+{% for prog in selected_programs %}
+  <a href="{% url 'curriculum:add_program_detail' institute_slug=institute.institute_slug program_slug=prog.program_slug %}?curriculum={{ request.GET.curriculum }}"
+     class="{% if prog.program_slug == request.GET.program %}selected{% endif %}">{{ prog.program_name }}</a>
+{% endfor %}
+<pre id="json-data-pre">
+        {{ form_data|safe }}
+</pre>
+{% for year_level, semesters in grouped_courses.items %}
+  <h3>{{ year_level }}</h3>
+  {% for semester, courses in semesters.items %}
+    <h4>{{ semester }}</h4>
+    <ul>
+      {% for course in form_data %}
+        <!-- Print the values for debugging -->
+        <p>Debug: year_level={{ year_level }}</p>
+        <p>Debug: semester={{ semester }}</p>
+        <p>Debug: course.year_level={{ course.year_level }}</p>
+        <p>Debug: course.semester={{ course.semester }}</p>
+        {% if course.year_level %}
+          <li>
+            {{ course.course_code }}: {{ course.course_description }}
+            (Lecture: {{ course.lecture }}, Laboratory: {{ course.laboratory }})
+          </li>
+        {% endif %}
+      {% empty %}
+        <li>No courses available for this semester.</li>
+      {% endfor %}
+    </ul>
+  {% endfor %}
+{% endfor %}
+<form method="POST">
+  {% csrf_token %}
+  <!-- Tab Navigation -->
+  <div id="tab-navigation">
+    <ul class="tab-links">
+      {% for year_level in grouped_courses.keys %}
+        <li>
+          <a href="?page={{ forloop.counter }}&curriculum={{ request.GET.curriculum }}&program={{ request.GET.program }}"
+             onclick="document.getElementById('hiddenYearLevel').value = '{{ year_level }}';">{{ year_level }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+  <!-- Pages Container -->
+  <div id="pages-container">
+    {% for year_level, semesters in grouped_courses.items %}
+      <div class="page"
+           data-year-level="{{ year_level }}"
+           {% if year_level != page_obj.object_list.0 %}style="display:none;"{% endif %}>
+        <h2>{{ year_level_display|default:year_level }}</h2>
+        {% for semester, courses in semesters.items %}
+          <h3>{{ semester_display|default:semester }}</h3>
+          <table data-year-level="{{ year_level }}" data-semester="{{ semester }}">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Course Code</th>
+                <th>Course Description</th>
+                <th>Lecture Hours</th>
+                <th>Lab Hours</th>
+                <th>Credit Units</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for semester_data in form_data %}
+                {% if semester_data.semester_display == semester_display|default:semester and semester_data.year_level_display == year_level_display|default:year_level %}
+                  {% for course in semester_data.courses %}
+                    <tr class="course-field">
+                      <td class="row-number">{{ forloop.counter }}</td>
+                      <td>
+                        <input type="text"
+                               name="course_code"
+                               placeholder="Course Code"
+                               value="{{ course.course_code }}">
+                      </td>
+                      <td>
+                        <input type="text"
+                               name="course_description"
+                               placeholder="Course Description"
+                               value="{{ course.course_description }}">
+                      </td>
+                      <td>
+                        <input type="number"
+                               name="lecture"
+                               placeholder="Lecture Hours"
+                               value="{{ course.lecture }}">
+                      </td>
+                      <td>
+                        <input type="number"
+                               name="laboratory"
+                               placeholder="Lab Hours"
+                               value="{{ course.laboratory }}">
+                      </td>
+                      <td>
+                        <input type="hidden" name="semester" value="{{ course.semester }}">
+                        <input type="hidden" name="year_level" value="{{ course.year_level }}">
+                        <button type="button" id="removeFieldButton-{{ forloop.counter }}">Remove</button>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                {% endif %}
+              {% endfor %}
+              {% if not form_data %}
+                <tr class="no-courses">
+                  <td colspan="6">No courses available for this semester.</td>
+                </tr>
+              {% endif %}
+            </tbody>
+          </table>
+          <button type="button"
+                  id="addFieldButton-{{ year_level }}-{{ semester }}"
+                  data-year-level="{{ year_level }}"
+                  data-semester="{{ semester }}">Add Course</button>
+        {% endfor %}
+        <!-- Save Button for Current Year Level -->
+        <button type="submit" name="SaveTempData" value="{{ year_level }}">Save {{ year_level }} Data</button>
+      </div>
+    {% endfor %}
+  </div>
+  <button type="submit" name="AddCourseSubmit">Save</button>
+  <!-- Hidden input to keep track of the currently active year level -->
+  <input type="hidden"
+         id="hiddenYearLevel"
+         name="active_year_level"
+         value="{{ page_obj.object_list.0 }}">
+</form>
+<script>
+  // Define mappings for year levels and semesters
+  const yearLevelMapping = {
+    'First Year' : 1,
+    'Second Year': 2,
+    'Third Year': 3,
+    'Fourth Year': 4
+  };
+
+  const semesterMapping = {
+    '1st Semester': 1,
+    '2nd Semester': 2,
+    '3rd Semester': 3
+  };
+
+  document.querySelectorAll('[id^="addFieldButton-"]').forEach(button => {
+    button.addEventListener('click', function() {
+      const yearLevelStr = this.getAttribute('data-year-level');
+      const semesterStr = this.getAttribute('data-semester');
+
+      // Convert attributes to integers using the mappings
+      const yearLevel = yearLevelMapping[yearLevelStr];
+      const semester = semesterMapping[semesterStr];
+
+      // Find the correct table body to insert the new row
+      const table = document.querySelector(`table[data-year-level="${yearLevelStr}"][data-semester="${semesterStr}"] tbody`);
+      if (!table) {
+        console.error('Table not found for the specified year level and semester');
+        return;
+      }
+
+      // Remove the "No courses available" row if it exists
+      const noCoursesRow = table.querySelector('.no-courses');
+      if (noCoursesRow) {
+        noCoursesRow.remove();
+      }
+
+      const newRow = document.createElement('tr');
+      const rowNumber = table.querySelectorAll('tr').length + 1;
+      newRow.classList.add('course-field');
+      newRow.innerHTML = `
+      <td class="row-number">${rowNumber}</td>
+        <td><input type="text" name="course_code" placeholder="Course Code"></td>
+        <td><input type="text" name="course_description" placeholder="Course Description"></td>
+        <td><input type="number" name="lecture" placeholder="Lecture Hours"></td>
+        <td><input type="number" name="laboratory" placeholder="Lab Hours"></td>
+        <td>
+          <input type="hidden" name="semester" value="${semester}">
+          <input type="hidden" name="year_level" value="${yearLevel}">
+          <button type="button" id="removeFieldButton-new">Remove</button>
+        </td>
+      `;
+      table.appendChild(newRow);
+      console.log('New row added:', newRow); // Debugging log
+      attachRemoveEvent(newRow.querySelector('[id^="removeFieldButton-"]'));
+    });
+  });
+
+  function attachRemoveEvent(button) {
+    button.addEventListener('click', function() {
+      this.closest('tr').remove();
+      console.log('Row removed'); // Debugging log
+    });
+  }
+
+  // Initialize remove buttons for existing fields
+  document.querySelectorAll('[id^="removeFieldButton-"]').forEach(button => {
+    attachRemoveEvent(button);
+  });
+function updateRowNumbers(table) {
+  const rows = table.querySelectorAll('tr.course-field');
+  rows.forEach((row, index) => {
+    row.querySelector('.row-number').textContent = index + 1;
+  });
+}
+
+  function attachRemoveEvent(button) {
+  button.addEventListener('click', function() {
+    const row = this.closest('tr');
+    const table = row.closest('tbody');
+    row.remove();
+
+    if (table.children.length === 0) {
+      const header = table.closest('table').querySelector('.course-header');
+      if (header) {
+        header.style.display = 'none';
+      }
+    }
+
+    updateRowNumbers(table);
+  });
+}
+</script>

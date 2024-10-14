@@ -1,0 +1,2 @@
+let unsavedChanges=false;function markAsDirty(){unsavedChanges=true;}
+document.querySelectorAll('form input, form textarea, form select').forEach((element)=>{element.addEventListener('change',markAsDirty);element.addEventListener('input',markAsDirty);});window.addEventListener('beforeunload',(event)=>{if(unsavedChanges){const message='You have unsaved changes. Are you sure you want to leave?';event.returnValue=message;return message;}});;

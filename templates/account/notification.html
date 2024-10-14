@@ -1,0 +1,27 @@
+{% extends "_base.html" %}
+{% load compress %}
+{% load i18n %}
+{% load static %}
+{% block title %}
+  Notification
+{% endblock title %}
+{% block content %}
+  {% if user_type == 2 %}
+    {% include "pages/vpaa/includes/navbar.html" %}
+  {% elif user_type == 3 %}
+    {% include "pages/dean/includes/navbar.html" %}
+  {% elif user_type == 4 %}
+    {% include "pages/progchair/includes/_navbar.html" %}
+  {% elif user_type == 5 %}
+    {% include "pages/faculty/includes/navbar.html" %}
+  {% endif %}
+  <div class="w-full lg:ps-64 bg-gray-100 h-full">
+    <div class="p-6 space-y-3">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <p class="text-2xl font-extrabold  text-gray-900">Notifications</p>
+      </div>
+    </div>
+    {% include "./includes/footer.html" %}
+  </div>
+</div>
+{% endblock content %}

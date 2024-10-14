@@ -1,0 +1,6 @@
+<h1>Create Program</h1>
+<form method="post">
+  {% csrf_token %}
+  {{ program_form.as_p }}
+  <button name="AddProgramSubmit" type="submit">Save</button>
+</form>

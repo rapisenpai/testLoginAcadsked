@@ -1,0 +1,18 @@
+{% extends "_base.html" %}
+{% load static %}
+{% block title %}
+   Test
+{% endblock title %}
+{% block content %}
+    <div class="w-full lg:ps-64 bg-gray-100 h-full">
+        <div class="p-6 space-y-3">
+            <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">
+ Submit
+</button>
+</form>
+        </div>
+    </div>
+{% endblock content %}

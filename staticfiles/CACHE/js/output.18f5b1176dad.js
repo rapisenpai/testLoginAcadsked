@@ -1,0 +1,1 @@
+document.addEventListener('DOMContentLoaded',function(){document.querySelectorAll('[data-hs-overlay="#delete-course"]').forEach(button=>{button.addEventListener('click',function(){const courseId=this.getAttribute('data-course-id');document.getElementById('delete_course_id').value=courseId;});});});;

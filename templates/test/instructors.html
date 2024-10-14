@@ -1,0 +1,33 @@
+{% if faculty_and_staff %}
+  {% for user in faculty_and_staff %}
+    {{ start_index|add:forloop.counter0|add:1 }}
+    <img src="{% if user.profile_image and user.profile_image.url %}{{ user.profile_image.url }}{% else %}https://ui-avatars.com/api/?name={{ user.first_name }}{% if user.middle_name %}{{ user.middle_name }}{% endif %}{{ user.last_name }}&background=random{% endif %}       "
+         alt="Profile Image">
+    {{ user.first_name }}
+    {% if user.middle_name %}{{ user.middle_name }}{% endif %}
+    {{ user.last_name }}
+    {{ user.email }}
+    {% with user.groupmember_set.all|dictsort:"group_id" as groupmembers %}
+      {% if groupmembers %}
+        {% for groupmember in groupmembers %}
+          {% if groupmember.group_id == selected_group.group_id %}
+            <p>Assigned Courses:</p>
+            {% if groupmember.courses.all %}
+              {% for course in groupmember.courses.all %}
+                <p>{{ course.course_code }}</p>
+                {% if forloop.counter|divisibleby:8 %}<br>{% endif %}
+              {% endfor %}
+            {% else %}
+              <p>No courses assigned</p>
+            {% endif %}
+            <p>Date Assigned: {{ groupmember.date_assigned }}</p>
+          {% endif %}
+        {% endfor %}
+      {% else %}
+        <p>No group members found</p>
+      {% endif %}
+    {% endwith %}
+  {% endfor %}
+{% else %}
+  {% include "partials/_no_data.html" %}
+{% endif %}

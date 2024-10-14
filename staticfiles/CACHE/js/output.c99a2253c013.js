@@ -1,0 +1,3 @@
+let isFormDirty=false;function setFormDirty(){isFormDirty=true;}
+function handleBeforeUnload(event){if(isFormDirty){const message="You have unsaved changes. Are you sure you want to leave?";event.preventDefault();event.returnValue=message;return message;}}
+document.addEventListener('DOMContentLoaded',()=>{const form=document.querySelector('form');if(form){form.addEventListener('input',setFormDirty);form.addEventListener('change',setFormDirty);window.addEventListener('beforeunload',handleBeforeUnload);}});;

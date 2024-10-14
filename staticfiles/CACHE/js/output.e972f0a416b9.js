@@ -1,0 +1,1 @@
+document.querySelectorAll('input[type="number"]').forEach((input)=>{input.addEventListener('input',function(){if(this.value>9){showToast('Invalid entry: Number must be between 0 and 9.',{delay:3000,colorClass:colorClasses['error'],iconClass:iconClasses['error']});this.value='';}});});;

@@ -1,0 +1,70 @@
+{% extends "_base.html" %}
+{% load static %}
+{% block title %}
+   Test
+{% endblock title %}
+{% block content %}
+    <div class="w-full lg:ps-64 bg-gray-100 h-full">
+        <div class="p-6 space-y-3">
+
+        
+ <h1>Course List by Year Level</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Submit</button>
+    </form>
+
+    {% for level, sets in courses_by_year_level_sets.items %}
+                  {% for course_set in sets %}
+                    
+                        <h2>{{ course_set.set_name }}</h2>
+                 
+ <div class="flex flex-col">
+      <div class="-m-1.5 overflow-x-auto">
+        <div class="p-1.5 min-w-full inline-block align-middle">
+          <div class="border rounded-lg shadow overflow-hidden dark:border-neutral-700 dark:shadow-gray-900">
+            <table class="min-w-full divide-y divide-gray-200 dark:divide-neutral-700">
+              <thead class="bg-gray-50 dark:bg-neutral-700">
+                <tr>
+                  <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-400">Course Id</th>
+                  <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-400">Course Code</th>
+                  <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-400">Course Description</th>
+                  <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-400">Lecture Hours</th>
+                  <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-400">Laboratory Hours</th>
+                  <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-400">Credits Units</th>
+                  <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-400">Is Lab</th>
+                  <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-400">Semester</th>
+                  <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-400">Year Level</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-200 dark:divide-neutral-700">
+                
+                    {% for course in course_set.courses %}
+                      <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ course.id }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ course.code }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ course.description }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ course.lecture_hours }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ course.laboratory_hours }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ course.credit_units }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ course.is_lab }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ course.semester }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ course.year_level }}</td>
+                      </tr>
+                    {% endfor %}
+                 
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+     {% endfor %}
+                {% endfor %}
+
+        </div>
+    </div>
+
+    
+{% endblock content %}

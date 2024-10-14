@@ -1,0 +1,1 @@
+document.addEventListener('DOMContentLoaded',function(){const submitButton=document.getElementById('updateCourseSubmitButton');const form=document.getElementById('updateCourseForm');submitButton.addEventListener('click',function(){form.submit();});});;
