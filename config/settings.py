@@ -22,7 +22,7 @@ INTERNAL_IPS = (
 
 )
 
-SIDE_ID = 2
+SIDE_ID = 1
 
 INSTALLED_APPS = [
     # 'multi_captcha_admin',
